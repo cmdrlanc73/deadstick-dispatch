@@ -115,7 +115,7 @@
         .standby-screen {
             display: none;
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px 20px;
         }
 
         .standby-screen h2 {
@@ -126,20 +126,33 @@
         }
 
         .standby-screen p {
-            color: var(--text-muted);
+            color: var(--text-main);
             font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 25px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .clipboard-box {
+            background-color: var(--bg-color);
+            border: 1px dashed var(--accent-gold);
+            padding: 12px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+            word-break: break-all;
+            text-align: left;
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             border: 4px solid var(--border-color);
             border-top: 4px solid var(--accent-gold);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px auto;
+            margin: 0 auto 15px auto;
         }
 
         @keyframes spin {
@@ -195,30 +208,49 @@
         <button type="submit" id="submitBtn" class="submit-btn">Transmit Emergency Signal</button>
     </form>
 
-    <!-- Standby / Transition Screen -->
+    <!-- Standby / Clipboard Transition Screen -->
     <div id="standbyScreen" class="standby-screen">
         <div class="spinner"></div>
-        <h2>Transmission Secured</h2>
-        <p>Signal locked. Stand by for operator contact...<br>Redirecting to secure comms channel.</p>
+        <h2>Signal Locked & Copied</h2>
+        <p>Your tactical brief has been copied to your clipboard.<br><strong>Paste this into Discord</strong> when comms open.</p>
+        <div class="clipboard-box" id="previewBox"></div>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Redirecting to secure comms channel...</p>
     </div>
 </div>
 
 <script>
     const form = document.getElementById('dispatchForm');
     const standbyScreen = document.getElementById('standbyScreen');
+    const previewBox = document.getElementById('previewBox');
     const DISCORD_LINK = "https://discord.gg/4w3xqYH7kd";
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        // Hide form, show static standby screen
+        // Gather form values
+        const client = document.getElementById('clientName').value;
+        const service = document.getElementById('serviceType').value;
+        const location = document.getElementById('location').value;
+        const threat = document.getElementById('threatLevel').value;
+        const details = document.getElementById('details').value || "None provided.";
+
+        // Format into a clean tactical dispatch block
+        const dispatchText = `🚨 **EMERGENCY DISPATCH REQUEST** 🚨\n• **Client:** ${client}\n• **Service:** ${service}\n• **Location:** ${location}\n• **Threat Level:** ${threat}\n• **Notes:** ${details}`;
+
+        // Copy to clipboard
+        navigator.clipboard.writeText(dispatchText).catch(err => {
+            console.error("Clipboard write failed", err);
+        });
+
+        // Show standby screen with preview
         form.style.display = 'none';
+        previewBox.innerText = dispatchText;
         standbyScreen.style.display = 'block';
 
-        // Brief delay for visual confirmation before routing to Discord
+        // Redirect to Discord after 3 seconds
         setTimeout(() => {
             window.location.href = DISCORD_LINK;
-        }, 2000);
+        }, 3000);
     });
 </script>
 
