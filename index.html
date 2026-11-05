@@ -3,87 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deadstick CSAR & Logistics Dispatch</title>
+    <title>TDD // EMERGENCY CONTRACT TERMINAL</title>
     <style>
         :root {
-            --bg-color: #0d1117;
-            --panel-bg: #161b22;
-            --accent-gold: #d4af37;
-            --accent-red: #da3633;
-            --text-main: #c9d1d9;
-            --text-muted: #8b949e;
-            --border-color: #30363d;
+            --tdd-bg: #0b0d10;
+            --tdd-panel: #14171f;
+            --tdd-amber: #ff9d00;
+            --tdd-amber-glow: rgba(255, 157, 0, 0.3);
+            --tdd-red: #ff3b30;
+            --tdd-text: #d8dee9;
+            --tdd-muted: #4c566a;
+            --tdd-border: #2e3440;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            font-family: "Courier New", Courier, monospace, system-ui, -apple-system;
+            background-color: var(--tdd-bg);
+            color: var(--tdd-text);
             margin: 0;
             padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            /* Subtle TDD grid backdrop */
+            background-image: 
+                linear-gradient(rgba(255, 157, 0, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 157, 0, 0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
         }
 
         .container {
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
+            background-color: var(--tdd-panel);
+            border: 2px solid var(--tdd-amber);
+            border-radius: 2px;
             width: 100%;
-            max-width: 600px;
+            max-width: 640px;
             padding: 25px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 30px var(--tdd-amber-glow), inset 0 0 20px rgba(0, 0, 0, 0.8);
+            position: relative;
+        }
+
+        /* Terminal header tag */
+        .container::before {
+            content: "SYS_ID: TDD-CONTRACT-DISPATCH // SECURE UPLINK";
+            position: absolute;
+            top: -11px;
+            left: 15px;
+            background: var(--tdd-bg);
+            color: var(--tdd-amber);
+            font-size: 0.65rem;
+            padding: 0 6px;
+            letter-spacing: 2px;
+            font-weight: bold;
         }
 
         .header {
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px dashed var(--tdd-border);
             padding-bottom: 15px;
             margin-bottom: 20px;
             text-align: center;
         }
 
         .header h1 {
-            color: var(--accent-gold);
+            color: var(--tdd-amber);
             margin: 0 0 5px 0;
-            font-size: 1.5rem;
-            letter-spacing: 1px;
+            font-size: 1.4rem;
+            letter-spacing: 3px;
             text-transform: uppercase;
+            text-shadow: 0 0 10px var(--tdd-amber-glow);
         }
 
         .header p {
-            color: var(--text-muted);
+            color: var(--tdd-muted);
             margin: 0;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
 
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--text-main);
+            margin-bottom: 6px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: var(--tdd-text);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        label::before {
+            content: "[+] ";
+            color: var(--tdd-amber);
         }
 
         input[type="text"], select, textarea {
             width: 100%;
-            padding: 10px;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            color: var(--text-main);
+            padding: 11px;
+            background-color: #07090c;
+            border: 1px solid var(--tdd-border);
+            border-radius: 0px;
+            color: var(--tdd-text);
             box-sizing: border-box;
-            font-size: 0.95rem;
+            font-family: inherit;
+            font-size: 0.9rem;
         }
 
         input[type="text"]:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: var(--accent-gold);
+            border-color: var(--tdd-amber);
+            box-shadow: 0 0 10px var(--tdd-amber-glow);
         }
 
         textarea {
@@ -93,66 +126,72 @@
 
         button.submit-btn {
             width: 100%;
-            background-color: var(--accent-red);
-            color: #ffffff;
+            background-color: var(--tdd-amber);
+            color: #000000;
             border: none;
-            padding: 12px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 4px;
+            padding: 14px;
+            font-size: 0.95rem;
+            font-weight: 900;
+            border-radius: 0px;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 3px;
             margin-top: 10px;
+            font-family: inherit;
+            box-shadow: 0 0 15px var(--tdd-amber-glow);
         }
 
         button.submit-btn:hover {
-            background-color: #b82a28;
+            background-color: #ffb733;
+            box-shadow: 0 0 25px rgba(255, 183, 51, 0.6);
         }
 
-        /* Standby / Success Screen */
         .standby-screen {
             display: none;
             text-align: center;
-            padding: 30px 20px;
+            padding: 35px 20px;
         }
 
         .standby-screen h2 {
-            color: var(--accent-gold);
+            color: var(--tdd-amber);
             margin-bottom: 15px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 3px;
+            font-size: 1.25rem;
+            text-shadow: 0 0 10px var(--tdd-amber-glow);
         }
 
         .standby-screen p {
-            color: var(--text-main);
-            font-size: 0.95rem;
+            color: var(--tdd-text);
+            font-size: 0.85rem;
             line-height: 1.6;
             margin-bottom: 20px;
         }
 
         .clipboard-box {
-            background-color: var(--bg-color);
-            border: 1px dashed var(--accent-gold);
-            padding: 12px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 0.85rem;
-            color: var(--accent-gold);
+            background-color: #07090c;
+            border: 1px dashed var(--tdd-amber);
+            padding: 14px;
+            border-radius: 0px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            color: var(--tdd-amber);
             margin-bottom: 20px;
             word-break: break-all;
             text-align: left;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
         }
 
         .spinner {
-            width: 35px;
-            height: 35px;
-            border: 4px solid var(--border-color);
-            border-top: 4px solid var(--accent-gold);
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--tdd-border);
+            border-top: 3px solid var(--tdd-amber);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px auto;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 0 10px var(--tdd-amber-glow);
         }
 
         @keyframes spin {
@@ -165,19 +204,19 @@
 
 <div class="container">
     <div class="header">
-        <h1>Deadstick Dispatch Terminal</h1>
-        <p>Search & Rescue (CSAR) | Field Logistics | Emergency Contracting</p>
+        <h1>Trade & Development Division</h1>
+        <p>CSAR // Emergency Logistics // Contract Terminal</p>
     </div>
 
     <!-- Active Form View -->
     <form id="dispatchForm">
         <div class="form-group">
-            <label for="clientName">Client Handle / RSI Moniker *</label>
-            <input type="text" id="clientName" required placeholder="e.g. Cmdr_Riker">
+            <label for="clientName">Client Handle / RSI Moniker</label>
+            <input type="text" id="clientName" required placeholder="e.g. Cmdr_Lanc">
         </div>
 
         <div class="form-group">
-            <label for="serviceType">Requested Assistance *</label>
+            <label for="serviceType">Requested Assistance</label>
             <select id="serviceType" required>
                 <option value="CSAR - Medical Extraction">CSAR - Medical Extraction / Rescue</option>
                 <option value="Logistics - Fuel / Repair Supply">Logistics - Fuel / Ammunition / Resupply</option>
@@ -187,12 +226,12 @@
         </div>
 
         <div class="form-group">
-            <label for="location">Current Sector / System / Marker *</label>
+            <label for="location">Current Sector / System / Marker</label>
             <input type="text" id="location" required placeholder="e.g. MicroTech - OM-2 / Ghost Hollow">
         </div>
 
         <div class="form-group">
-            <label for="threatLevel">Threat Level *</label>
+            <label for="threatLevel">Threat Level</label>
             <select id="threatLevel" required>
                 <option value="Green - Cold (No hostile contact)">Green - Clear / Secure Space</option>
                 <option value="Yellow - Moderate (Hostiles in area)">Yellow - Elevated / Hostiles Proximity</option>
@@ -205,16 +244,16 @@
             <textarea id="details" placeholder="Specify ship type, injuries, hostile counts, or special access codes..."></textarea>
         </div>
 
-        <button type="submit" id="submitBtn" class="submit-btn">Transmit Emergency Signal</button>
+        <button type="submit" id="submitBtn" class="submit-btn">Transmit Emergency Contract</button>
     </form>
 
     <!-- Standby / Clipboard Transition Screen -->
     <div id="standbyScreen" class="standby-screen">
         <div class="spinner"></div>
-        <h2>Signal Locked & Copied</h2>
-        <p>Your tactical brief has been copied to your clipboard.<br><strong>Paste this into Discord</strong> when comms open.</p>
+        <h2>Contract Buffered & Copied</h2>
+        <p>Tactical data packet saved to clipboard.<br><strong>Paste into secure comms</strong> upon channel connection.</p>
         <div class="clipboard-box" id="previewBox"></div>
-        <p style="font-size: 0.8rem; color: var(--text-muted);">Redirecting to secure comms channel...</p>
+        <p style="font-size: 0.75rem; color: var(--tdd-muted); letter-spacing: 2px;">ESTABLISHING UPLINK TO DISCORD...</p>
     </div>
 </div>
 
@@ -227,27 +266,22 @@
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        // Gather form values
         const client = document.getElementById('clientName').value;
         const service = document.getElementById('serviceType').value;
         const location = document.getElementById('location').value;
         const threat = document.getElementById('threatLevel').value;
         const details = document.getElementById('details').value || "None provided.";
 
-        // Format into a clean tactical dispatch block
         const dispatchText = `🚨 **EMERGENCY DISPATCH REQUEST** 🚨\n• **Client:** ${client}\n• **Service:** ${service}\n• **Location:** ${location}\n• **Threat Level:** ${threat}\n• **Notes:** ${details}`;
 
-        // Copy to clipboard
         navigator.clipboard.writeText(dispatchText).catch(err => {
             console.error("Clipboard write failed", err);
         });
 
-        // Show standby screen with preview
         form.style.display = 'none';
         previewBox.innerText = dispatchText;
         standbyScreen.style.display = 'block';
 
-        // Redirect to Discord after 3 seconds
         setTimeout(() => {
             window.location.href = DISCORD_LINK;
         }, 3000);
