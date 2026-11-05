@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEADSTICK // EMERGENCY DISPATCH</title>
+    <style>
+        body {
+            background-color: #0b0c0e;
+            color: #d1d5db;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+        .dispatch-card {
+            background: #14171d;
+            border: 2px solid #ffcc00;
+            padding: 2rem;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 0 25px rgba(255, 204, 0, 0.15);
+            box-sizing: border-box;
+        }
+        .logo-header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .logo-header img {
+            width: 120px;
+            height: auto;
+            display: block;
+            margin: 0 auto 0.75rem auto;
+        }
+        h2 {
+            color: #ffcc00;
+            text-align: center;
+            margin: 0;
+            letter-spacing: 2px;
+            font-size: 1.4rem;
+            text-transform: uppercase;
+        }
+        .tagline {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #9ca3af;
+            letter-spacing: 1px;
+            margin-top: 0.4rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #2a2e3d;
+            padding-bottom: 0.75rem;
+        }
+        label {
+            display: block;
+            margin-top: 1rem;
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: #ffcc00;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 0.6rem;
+            margin-top: 0.3rem;
+            background: #1e222b;
+            border: 1px solid #373d4b;
+            color: #f3f4f6;
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: 0.85rem;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #ffcc00;
+            background: #242934;
+        }
+        button {
+            width: 100%;
+            margin-top: 1.75rem;
+            padding: 0.85rem;
+            background: #ffcc00;
+            color: #0b0c0e;
+            border: none;
+            font-weight: bold;
+            font-size: 0.95rem;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+        button:hover {
+            background: #e6b800;
+        }
+        button:active {
+            transform: scale(0.99);
+        }
+    </style>
+</head>
+<body>
+
+<div class="dispatch-card">
+    <div class="logo-header">
+        <!-- REPLACE 'logo.png' WITH YOUR ACTUAL LOGO FILE NAME OR IMAGE URL -->
+        <img src="logo.png" alt="DEADSTICK Logo" onerror="this.style.display='none'">
+        <h2>[ DEADSTICK DISPATCH ]</h2>
+        <div class="tagline">WE FIND YOU. WE FIX YOU. WE FUEL YOU.</div>
+    </div>
+    
+    <form id="dispatchForm">
+        <label>RSI Spectrum Handle</label>
+        <input type="text" id="handle" required placeholder="e.g. Commander_Riker">
+
+        <label>Location / System / Marker</label>
+        <input type="text" id="location" required placeholder="e.g. Yela OM-3 / MicroTech Shubin">
+
+        <label>Service Needed</label>
+        <select id="service">
+            <option value="CSAR / Medical Extraction">CSAR / Medical Extraction</option>
+            <option value="Tactical Refuel">Tactical Refuel</option>
+            <option value="Ammo / Consumable Resupply">Ammo / Resupply</option>
+            <option value="Armed Escort">Armed Escort</option>
+        </select>
+
+        <label>Threat Level</label>
+        <select id="threat">
+            <option value="Low / Clear Sector">Low / Clear Sector</option>
+            <option value="Medium / Hostiles Nearby">Medium / Hostiles Nearby</option>
+            <option value="HOT-ZONE / Active Combat">HOT-ZONE / Active Combat</option>
+        </select>
+
+        <label>Tactical Notes / Ship Model</label>
+        <textarea id="notes" rows="3" placeholder="Soft-dead Cutlass Black, 1 wounded..."></textarea>
+
+        <button type="submit">TRANSMIT BEACON</button>
+    </form>
+</div>
+
+<script>
+    // PASTE YOUR DISCORD WEBHOOK URL HERE
+    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1567689888495829112/6r3Zuvtg1Jn0dbq1uPTWm0y0fcuwnxowMpXog99A0VRr_WKYF-zHpw9gpgl_RYhLvbFx";
+
+    // Global guard flag to prevent rapid spam / double submissions
+    let isSubmitting = false;
+
+    document.getElementById('dispatchForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // 1. LOOP PREVENTION: Block submission if already in progress
+        if (isSubmitting) return;
+        isSubmitting = true;
+
+        // Visual feedback & disable button immediately
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerText;
+        submitBtn.disabled = true;
+        submitBtn.innerText = "TRANSMITTING...";
+
+        // Extract form values
+        const handle = document.getElementById('handle').value;
+        const location = document.getElementById('location').value;
+        const service = document.getElementById('service').value;
+        const threat = document.getElementById('threat').value;
+        const notes = document.getElementById('notes').value;
+
+        // VDO.ninja Standing Room
+        const voiceRoomUrl = "https://vdo.ninja/?room=Deadstick_CSAR_Comms&audioonly";
+        
+        // Dynamic embed accent color (Yellow for standard, Red for Hot-Zone)
+        const embedColor = threat.includes("HOT-ZONE") ? 16724736 : 16763904;
+
+        const payload = {
+            embeds: [{
+                title: "🚨 WEB DISPATCH BEACON RECEIVED 🚨",
+                color: embedColor,
+                fields: [
+                    { name: "Client Handle", value: handle, inline: true },
+                    { name: "Location", value: location, inline: true },
+                    { name: "Service Requested", value: service, inline: true },
+                    { name: "Threat Level", value: threat, inline: false },
+                    { name: "Tactical Notes", value: notes || "None provided", inline: false },
+                    { name: "🎙️ Emergency Voice Channel", value: `[Join VDO.ninja Voice Comms](${voiceRoomUrl})`, inline: false }
+                ],
+                footer: { text: "DEADSTICK // External Dispatch Terminal" },
+                timestamp: new Date().toISOString()
+            }]
+        };
+
+        // 2. PROXY RELAY: Route via corsproxy.io to bypass browser CORS / 405 errors
+        const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(DISCORD_WEBHOOK_URL);
+
+        try {
+            const response = await fetch(proxyUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                alert("BEACON TRANSMITTED! Opening temporary voice comms channel now...");
+                window.open(voiceRoomUrl, '_blank');
+                document.getElementById('dispatchForm').reset();
+            } else {
+                alert("Transmission failed. Please verify your Discord Webhook URL.");
+            }
+        } catch (err) {
+            console.error("Dispatch Error:", err);
+            alert("Error transmitting beacon. Please check your network connection.");
+        } finally {
+            // 3. COOLDOWN: Re-enable the submit button after a 5-second cooldown
+            setTimeout(() => {
+                isSubmitting = false;
+                submitBtn.disabled = false;
+                submitBtn.innerText = originalBtnText;
+            }, 5000);
+        }
+    });
+</script>
+
+</body>
+</html>
