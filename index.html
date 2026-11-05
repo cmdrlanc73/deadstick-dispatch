@@ -1,293 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deadstick Dispatch Terminal</title>
-    <style>
-        :root {
-            --tdd-bg: #0b0d10;
-            --tdd-panel: #14171f;
-            --tdd-amber: #ff9d00;
-            --tdd-amber-glow: rgba(255, 157, 0, 0.3);
-            --tdd-red: #ff3b30;
-            --tdd-text: #d8dee9;
-            --tdd-muted: #4c566a;
-            --tdd-border: #2e3440;
-        }
-
-        body {
-            font-family: "Courier New", Courier, monospace, system-ui, -apple-system;
-            background-color: var(--tdd-bg);
-            color: var(--tdd-text);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            /* TDD grid backdrop */
-            background-image: 
-                linear-gradient(rgba(255, 157, 0, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 157, 0, 0.02) 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-
-        .container {
-            background-color: var(--tdd-panel);
-            border: 2px solid var(--tdd-amber);
-            border-radius: 2px;
-            width: 100%;
-            max-width: 640px;
-            padding: 25px;
-            box-shadow: 0 0 30px var(--tdd-amber-glow), inset 0 0 20px rgba(0, 0, 0, 0.8);
-            position: relative;
-        }
-
-        /* Terminal header tag */
-        .container::before {
-            content: "DEADSTICK LOGISTICS // EMERGENCY-DISPATCH-SYS v4.20.69";
-            position: absolute;
-            top: -11px;
-            left: 15px;
-            background: var(--tdd-bg);
-            color: var(--tdd-amber);
-            font-size: 0.65rem;
-            padding: 0 6px;
-            letter-spacing: 2px;
-            font-weight: bold;
-        }
-
-        .header {
-            border-bottom: 1px dashed var(--tdd-border);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .header h1 {
-            color: var(--tdd-amber);
-            margin: 0 0 5px 0;
-            font-size: 1.4rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            text-shadow: 0 0 10px var(--tdd-amber-glow);
-        }
-
-        .header p {
-            color: var(--tdd-muted);
-            margin: 0;
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        /* Nav / External Link Buttons */
-        .nav-links {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .nav-btn {
-            flex: 1;
-            background-color: #07090c;
-            color: var(--tdd-amber);
-            border: 1px solid var(--tdd-amber);
-            padding: 10px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            text-align: center;
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            transition: all 0.2s;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
-            font-family: inherit;
-        }
-
-        .nav-btn:hover {
-            background-color: var(--tdd-amber);
-            color: #000000;
-            box-shadow: 0 0 15px var(--tdd-amber-glow);
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: bold;
-            font-size: 0.8rem;
-            color: var(--tdd-text);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        label::before {
-            content: "[+] ";
-            color: var(--tdd-amber);
-        }
-
-        input[type="text"], select, textarea {
-            width: 100%;
-            padding: 11px;
-            background-color: #07090c;
-            border: 1px solid var(--tdd-border);
-            border-radius: 0px;
-            color: var(--tdd-text);
-            box-sizing: border-box;
-            font-family: inherit;
-            font-size: 0.9rem;
-        }
-
-        input[type="text"]:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--tdd-amber);
-            box-shadow: 0 0 10px var(--tdd-amber-glow);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        button.submit-btn {
-            width: 100%;
-            background-color: var(--tdd-amber);
-            color: #000000;
-            border: none;
-            padding: 14px;
-            font-size: 0.95rem;
-            font-weight: 900;
-            border-radius: 0px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-top: 10px;
-            font-family: inherit;
-            box-shadow: 0 0 15px var(--tdd-amber-glow);
-        }
-
-        button.submit-btn:hover {
-            background-color: #ffb733;
-            box-shadow: 0 0 25px rgba(255, 183, 51, 0.6);
-        }
-
-        .standby-screen {
-            display: none;
-            text-align: center;
-            padding: 35px 20px;
-        }
-
-        .standby-screen h2 {
-            color: var(--tdd-amber);
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-size: 1.25rem;
-            text-shadow: 0 0 10px var(--tdd-amber-glow);
-        }
-
-        .standby-screen p {
-            color: var(--tdd-text);
-            font-size: 0.85rem;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .clipboard-box {
-            background-color: #07090c;
-            border: 1px dashed var(--tdd-amber);
-            padding: 14px;
-            border-radius: 0px;
-            font-family: inherit;
-            font-size: 0.8rem;
-            color: var(--tdd-amber);
-            margin-bottom: 20px;
-            word-break: break-all;
-            text-align: left;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
-        }
-
-        .spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid var(--tdd-border);
-            border-top: 3px solid var(--tdd-amber);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 20px auto;
-            box-shadow: 0 0 10px var(--tdd-amber-glow);
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <!-- RESTORED: Deadstick LOGISTIC Branding / Logo Header -->
-    <div class="header">
-        <img src="logo.png" alt="Deadstick Logistics Logo" style="max-width: 180px; height: auto; margin-bottom: 15px; display: block; margin-left: auto; margin-right: auto;">
-        <h1>DEADSTICK LOGISTICS</h1>
-        <p>Search & Rescue (CSAR) // Field Logistics // Emergency Dispatch</p>
+<div id="clipboardBox" class="clipboard-box"></div>
+        <button type="button" class="nav-btn" onclick="resetForm()">// TRANSMIT ANOTHER SIGNAL</button>
     </div>
+</div>
 
-    <!-- External Navigation / Action Buttons -->
-    <div class="nav-links">
-        <a href="https://robertsspaceindustries.com/en/orgs/DEADSTICK" target="_blank" class="nav-btn">// RSI Org Page</a>
-        <a href="https://discord.gg/PXDRxM2sF" id="navDiscordBtn" target="_blank" class="nav-btn">// Our Discord</a>
-    </div>
+<script>
+    // REPLACE WITH YOUR ACTUAL STOAT CHANNEL WEBHOOK URL
+    const WEBHOOK_URL = "https://stoat.chat/api/webhooks/01M6NX4T73746H9E12SFBYSER2/YDLEKJ052-SOa_lcdjW8ZCrzmOWG2NYTR8RrgHKcCnKAUtpJwr92-OIjMR62Jvcr";
 
-    <!-- Active Form View -->
-    <form id="dispatchForm">
-        <div class="form-group">
-            <label for="clientName">Client Handle / RSI Moniker</label>
-            <input type="text" id="clientName" required placeholder="e.g. Cmdr_Riker">
-        </div>
+    document.getElementById('dispatchForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
 
-        <div class="form-group">
-            <label for="serviceType">Requested Assistance</label>
-            <select id="serviceType" required>
-                <option value="CSAR - Medical Extraction">CSAR - Medical Extraction / Rescue</option>
-                <option value="Logistics - Fuel / Repair Supply">Logistics - Fuel / Ammunition / Resupply</option>
-                <option value="Escort - Combat Support">Escort - Tactical Escort / Overwatch</option>
-                <option value="Recovery - Asset Salvage">Recovery - Ship / Gear Salvage</option>
-            </select>
-        </div>
+        // 1. Gather form values
+        const clientName = document.getElementById('clientName').value;
+        const serviceType = document.getElementById('serviceType').value;
+        const location = document.getElementById('location').value;
+        const threatLevel = document.getElementById('threatLevel').value;
+        const details = document.getElementById('details').value || "None provided";
 
-        <div class="form-group">
-            <label for="location">Current Sector / System / Marker</label>
-            <input type="text" id="location" required placeholder="e.g. MicroTech - OM-2 / Ghost Hollow">
-        </div>
+        // 2. Format message for Stoat / Discord compatibility
+        const payload = {
+            content: "@everyone **🚨 INCOMING EMERGENCY DISTRESS SIGNAL 🚨**",
+            embeds: [{
+                title: "DEADSTICK DISPATCH // " + serviceType.toUpperCase(),
+                color: 16751616, // Amber hex #ff9d00 in decimal
+                fields: [
+                    { name: "Client Handle", value: clientName, inline: true },
+                    { name: "Threat Level", value: threatLevel, inline: true },
+                    { name: "Location / Sector", value: location, inline: false },
+                    { name: "Operational Notes", value: details, inline: false }
+                ],
+                footer: {
+                    text: "Deadstick Logistics Automated Emergency Dispatch System"
+                },
+                timestamp: new Date().toISOString()
+            }]
+        };
 
-        <div class="form-group">
-            <label for="threatLevel">Threat Level</label>
-            <select id="threatLevel" required>
-                <option value="Green - Cold (No hostile contact)">Green - Clear / Secure Space</option>
-                <option value="Yellow - Moderate (Hostiles in area)">Yellow - Elevated / Hostiles Proximity</option>
-                <option value="Red - Hot (Active combat / Downed)">Red - Active Hostile Engagement</option>
-            </select>
-        </div>
+        // 3. UI Transition - Hide form, show standby loader
+        document.getElementById('dispatchForm').style.display = 'none';
+        document.getElementById('standbyScreen').style.display = 'block';
 
-        <div class="form-group">
-            <label for="details">Tactical Brief / Operational Notes</label>
-            <textarea id="details" placeholder="Specify ship type, injuries, hostile counts, or special access codes..."></textarea>
-        </div>
+        // 4. Send Webhook Request to Stoat
+        try {
+            const response = await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
 
-        <button type="submit" id="submitBtn" class="submit-btn">Transmit Emergency Signal</button>
-    </form>
+            const summaryText = `CLIENT: ${clientName} | SERVICE: ${serviceType} | SECTOR: ${location} | THREAT: ${threatLevel}`;
+            navigator.clipboard.writeText(summaryText);
+            document.getElementById('clipboardBox').innerText = summaryText;
 
-    <!-- Standby / Clipboard Transition Screen -->
-    <div id="standbyScreen" class="standby-screen">
-        <div class="spinner"></div>
-        <h2>Signal Locked & Copied</h2>
-        <p>Tactical data packet buffered to clipboard.<br><strong>Paste into secure comms</strong> upon channel connection.</p>
-        <div
+            if (!response.ok) {
+                console.warn("Webhook transmission warning: Status code " + response.status);
+            }
+        } catch (error) {
+            console.error("Transmission network error:", error);
+        }
+    });
+
+    function resetForm() {
+        document.getElementById('dispatchForm').reset();
+        document.getElementById('standbyScreen').style.display = 'none';
+        document.getElementById('dispatchForm').style.display = 'block';
+    }
+</script>
+</body>
+</html>[cite: 2]
