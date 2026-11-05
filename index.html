@@ -89,7 +89,8 @@
         textarea {
             resize: vertical;
             min-height: 80px;
-        }   
+        }
+
         button.submit-btn {
             width: 100%;
             background-color: var(--accent-red);
@@ -103,6 +104,7 @@
             transition: background-color 0.2s;
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-top: 10px;
         }
 
         button.submit-btn:hover {
@@ -122,13 +124,9 @@
             font-size: 0.9rem;
             text-align: center;
             display: none;
-        }
-
-        .status-msg.success {
             background-color: rgba(46, 160, 67, 0.15);
             border: 1px solid #2ea043;
             color: #3fb950;
-            display: block;
         }
     </style>
 </head>
@@ -140,15 +138,9 @@
         <p>Search & Rescue (CSAR) | Field Logistics | Emergency Contracting</p>
     </div>
 
-    <div class="comms-box">
-        <p><strong>IMMEDIATE VOICE LINK REQUIRED?</strong></p>
-        <a href="https://vdo.ninja/?room=DeadstickDispatch" target="_blank" class="vdo-link">Join Zero-Friction Comms (VDO.ninja)</a>
-    </div>
-
-    <!-- Web3Forms free tier routes straight to Discord / Email safely without CORS blocks -->
     <form action="https://api.web3forms.com/submit" method="POST" id="dispatchForm">
-        <!-- Replace with your free Web3Forms access key from web3forms.com (takes 10 seconds to generate) -->
-        <input type="hidden" name="apikey" value="YOUR_WEB3FORMS_ACCESS_KEY_HERE">
+        <!-- Replace value below with your Web3Forms access key string -->
+        <input type="hidden" name="apikey" value="54718139-405f-4434-97ff-90c38129e383">
         <input type="hidden" name="subject" value="🚨 EMERGENCY DISPATCH REQUEST RECEIVED">
 
         <div class="form-group">
@@ -191,7 +183,6 @@
 </div>
 
 <script>
-    // Optional UI enhancement on submission
     const form = document.getElementById('dispatchForm');
     const submitBtn = document.getElementById('submitBtn');
     const statusMsg = document.getElementById('statusMsg');
@@ -199,6 +190,7 @@
     form.addEventListener('submit', () => {
         submitBtn.disabled = true;
         submitBtn.innerText = "Transmitting...";
+        statusMsg.style.display = "block";
     });
 </script>
 
