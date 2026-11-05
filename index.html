@@ -111,26 +111,40 @@
             background-color: #b82a28;
         }
 
-        button.submit-btn:disabled {
-            background-color: var(--border-color);
-            cursor: not-allowed;
-            color: var(--text-muted);
-        }
-<div class="comms-panel">
-        <p>DIRECT VOICE HOTLINE</p>
-        <!-- PASTE YOUR CUSTOM DISCORD INVITE LINK BELOW -->
-        <a href="https://discord.gg/4w3xqYH7kd" target="_blank" class="voice-link">Open Secure Voice Channel</a>
-    </div>
-        .status-msg {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            text-align: center;
+        /* Standby / Success Screen */
+        .standby-screen {
             display: none;
-            background-color: rgba(46, 160, 67, 0.15);
-            border: 1px solid #2ea043;
-            color: #3fb950;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .standby-screen h2 {
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .standby-screen p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -142,19 +156,16 @@
         <p>Search & Rescue (CSAR) | Field Logistics | Emergency Contracting</p>
     </div>
 
-    <form action="https://api.web3forms.com/submit" method="POST" id="dispatchForm">
-        <!-- Replace value below with your Web3Forms access key string -->
-        <input type="hidden" name="access_key" value="54718139-405f-4434-97ff-90c38129e383">
-        <input type="hidden" name="subject" value="🚨 EMERGENCY DISPATCH REQUEST RECEIVED">
-
+    <!-- Active Form View -->
+    <form id="dispatchForm">
         <div class="form-group">
             <label for="clientName">Client Handle / RSI Moniker *</label>
-            <input type="text" id="clientName" name="Client Handle" required placeholder="e.g. Cmdr_Riker">
+            <input type="text" id="clientName" required placeholder="e.g. Cmdr_Lanc">
         </div>
 
         <div class="form-group">
             <label for="serviceType">Requested Assistance *</label>
-            <select id="serviceType" name="Service Type" required>
+            <select id="serviceType" required>
                 <option value="CSAR - Medical Extraction">CSAR - Medical Extraction / Rescue</option>
                 <option value="Logistics - Fuel / Repair Supply">Logistics - Fuel / Ammunition / Resupply</option>
                 <option value="Escort - Combat Support">Escort - Tactical Escort / Overwatch</option>
@@ -164,12 +175,12 @@
 
         <div class="form-group">
             <label for="location">Current Sector / System / Marker *</label>
-            <input type="text" id="location" name="Location" required placeholder="e.g. MicroTech - OM-2 / Ghost Hollow">
+            <input type="text" id="location" required placeholder="e.g. MicroTech - OM-2 / Ghost Hollow">
         </div>
 
         <div class="form-group">
             <label for="threatLevel">Threat Level *</label>
-            <select id="threatLevel" name="Threat Level" required>
+            <select id="threatLevel" required>
                 <option value="Green - Cold (No hostile contact)">Green - Clear / Secure Space</option>
                 <option value="Yellow - Moderate (Hostiles in area)">Yellow - Elevated / Hostiles Proximity</option>
                 <option value="Red - Hot (Active combat / Downed)">Red - Active Hostile Engagement</option>
@@ -178,23 +189,36 @@
 
         <div class="form-group">
             <label for="details">Tactical Brief / Operational Notes</label>
-            <textarea id="details" name="Operational Notes" placeholder="Specify ship type, injuries, hostile counts, or special access codes..."></textarea>
+            <textarea id="details" placeholder="Specify ship type, injuries, hostile counts, or special access codes..."></textarea>
         </div>
 
         <button type="submit" id="submitBtn" class="submit-btn">Transmit Emergency Signal</button>
-        <div id="statusMsg" class="status-msg">Signal Transmitted Successfully. Stand by for Operator contact.</div>
     </form>
+
+    <!-- Standby / Transition Screen -->
+    <div id="standbyScreen" class="standby-screen">
+        <div class="spinner"></div>
+        <h2>Transmission Secured</h2>
+        <p>Signal locked. Stand by for operator contact...<br>Redirecting to secure comms channel.</p>
+    </div>
 </div>
 
 <script>
     const form = document.getElementById('dispatchForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const statusMsg = document.getElementById('statusMsg');
+    const standbyScreen = document.getElementById('standbyScreen');
+    const DISCORD_LINK = "https://discord.gg/4w3xqYH7kd";
 
-    form.addEventListener('submit', () => {
-        submitBtn.disabled = true;
-        submitBtn.innerText = "Transmitting...";
-        statusMsg.style.display = "block";
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Hide form, show static standby screen
+        form.style.display = 'none';
+        standbyScreen.style.display = 'block';
+
+        // Brief delay for visual confirmation before routing to Discord
+        setTimeout(() => {
+            window.location.href = DISCORD_LINK;
+        }, 2000);
     });
 </script>
 
