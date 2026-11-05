@@ -1,10 +1,5 @@
-<div id="clipboardBox" class="clipboard-box"></div>
-        <button type="button" class="nav-btn" onclick="resetForm()">// TRANSMIT ANOTHER SIGNAL</button>
-    </div>
-</div>
-
 <script>
-    // REPLACE WITH YOUR ACTUAL STOAT CHANNEL WEBHOOK URL
+    // YOUR STOAT CHANNEL WEBHOOK URL
     const WEBHOOK_URL = "https://stoat.chat/api/webhooks/01M6NX4T73746H9E12SFBYSER2/YDLEKJ052-SOa_lcdjW8ZCrzmOWG2NYTR8RrgHKcCnKAUtpJwr92-OIjMR62Jvcr";
 
     document.getElementById('dispatchForm').addEventListener('submit', async function(e) {
@@ -17,23 +12,14 @@
         const threatLevel = document.getElementById('threatLevel').value;
         const details = document.getElementById('details').value || "None provided";
 
-        // 2. Format message for Stoat / Discord compatibility
+        // 2. Format as clean Markdown text payload (compatible with Stoat's webhook parser)
         const payload = {
-            content: "@everyone **🚨 INCOMING EMERGENCY DISTRESS SIGNAL 🚨**",
-            embeds: [{
-                title: "DEADSTICK DISPATCH // " + serviceType.toUpperCase(),
-                color: 16751616, // Amber hex #ff9d00 in decimal
-                fields: [
-                    { name: "Client Handle", value: clientName, inline: true },
-                    { name: "Threat Level", value: threatLevel, inline: true },
-                    { name: "Location / Sector", value: location, inline: false },
-                    { name: "Operational Notes", value: details, inline: false }
-                ],
-                footer: {
-                    text: "Deadstick Logistics Automated Emergency Dispatch System"
-                },
-                timestamp: new Date().toISOString()
-            }]
+            content: `@everyone \`\`\`ansi\n\u001b[1;33m🚨 INCOMING EMERGENCY DISTRESS SIGNAL 🚨\u001b[0m\n\`\`\`\n` +
+                     `> **SERVICE:** ${serviceType}\n` +
+                     `> **CLIENT:** ${clientName}\n` +
+                     `> **SECTOR:** ${location}\n` +
+                     `> **THREAT:** ${threatLevel}\n` +
+                     `> **NOTES:** ${details}`
         };
 
         // 3. UI Transition - Hide form, show standby loader
@@ -51,7 +37,9 @@
             });
 
             const summaryText = `CLIENT: ${clientName} | SERVICE: ${serviceType} | SECTOR: ${location} | THREAT: ${threatLevel}`;
-            navigator.clipboard.writeText(summaryText);
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(summaryText);
+            }
             document.getElementById('clipboardBox').innerText = summaryText;
 
             if (!response.ok) {
@@ -69,4 +57,5 @@
     }
 </script>
 </body>
-</html>[cite: 2]
+</html>
+```[cite: 2]
