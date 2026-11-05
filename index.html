@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TDD // EMERGENCY CONTRACT TERMINAL</title>
+    <title>Deadstick // TDD Emergency Terminal</title>
     <style>
         :root {
             --tdd-bg: #0b0d10;
@@ -26,7 +26,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            /* Subtle TDD grid backdrop */
+            /* TDD grid backdrop */
             background-image: 
                 linear-gradient(rgba(255, 157, 0, 0.02) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 157, 0, 0.02) 1px, transparent 1px);
@@ -46,7 +46,7 @@
 
         /* Terminal header tag */
         .container::before {
-            content: "SYS_ID: TDD-CONTRACT-DISPATCH // SECURE UPLINK";
+            content: "DEADSTICK PMC // TDD-DISPATCH-SYS v4.2";
             position: absolute;
             top: -11px;
             left: 15px;
@@ -204,8 +204,8 @@
 
 <div class="container">
     <div class="header">
-        <h1>Trade & Development Division</h1>
-        <p>CSAR // Emergency Logistics // Contract Terminal</p>
+        <h1>Deadstick Dispatch Terminal</h1>
+        <p>CSAR // Field Logistics // Emergency Comms Relay</p>
     </div>
 
     <!-- Active Form View -->
@@ -244,14 +244,14 @@
             <textarea id="details" placeholder="Specify ship type, injuries, hostile counts, or special access codes..."></textarea>
         </div>
 
-        <button type="submit" id="submitBtn" class="submit-btn">Transmit Emergency Contract</button>
+        <button type="submit" id="submitBtn" class="submit-btn">Transmit Emergency Signal</button>
     </form>
 
     <!-- Standby / Clipboard Transition Screen -->
     <div id="standbyScreen" class="standby-screen">
         <div class="spinner"></div>
-        <h2>Contract Buffered & Copied</h2>
-        <p>Tactical data packet saved to clipboard.<br><strong>Paste into secure comms</strong> upon channel connection.</p>
+        <h2>Signal Locked & Copied</h2>
+        <p>Tactical data packet buffered to clipboard.<br><strong>Paste into secure comms</strong> upon channel connection.</p>
         <div class="clipboard-box" id="previewBox"></div>
         <p style="font-size: 0.75rem; color: var(--tdd-muted); letter-spacing: 2px;">ESTABLISHING UPLINK TO DISCORD...</p>
     </div>
