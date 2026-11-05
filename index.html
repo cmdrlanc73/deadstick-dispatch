@@ -82,6 +82,36 @@
             text-transform: uppercase;
         }
 
+        /* Nav / External Link Buttons */
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            background-color: #07090c;
+            color: var(--tdd-amber);
+            border: 1px solid var(--tdd-amber);
+            padding: 10px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.2s;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+            font-family: inherit;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--tdd-amber);
+            color: #000000;
+            box-shadow: 0 0 15px var(--tdd-amber-glow);
+        }
+
         .form-group {
             margin-bottom: 16px;
         }
@@ -211,6 +241,12 @@
         <p>Search & Rescue (CSAR) // Field Logistics // Emergency Dispatch</p>
     </div>
 
+    <!-- External Navigation / Action Buttons -->
+    <div class="nav-links">
+        <a href="YOUR_RSI_ORG_URL_HERE" target="_blank" class="nav-btn">// RSI Org Page</a>
+        <a href="https://discord.gg/4w3xqYH7kd" target="_blank" class="nav-btn">// Secure Discord</a>
+    </div>
+
     <!-- Active Form View -->
     <form id="dispatchForm">
         <div class="form-group">
@@ -270,7 +306,7 @@
         e.preventDefault();
 
         const client = document.getElementById('clientName').value;
-        const service = document.getElementById('serviceType', true).value;
+        const service = document.getElementById('serviceType').value;
         const location = document.getElementById('location').value;
         const threat = document.getElementById('threatLevel').value;
         const details = document.getElementById('details').value || "None provided.";
