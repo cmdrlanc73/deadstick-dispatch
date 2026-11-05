@@ -3,219 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEADSTICK // EMERGENCY DISPATCH</title>
+    <title>Deadstick CSAR & Logistics Dispatch</title>
     <style>
+        :root {
+            --bg-color: #0d1117;
+            --panel-bg: #161b22;
+            --accent-gold: #d4af37;
+            --accent-red: #da3633;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --border-color: #30363d;
+        }
+
         body {
-            background-color: #0b0c0e;
-            color: #d1d5db;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
-            padding: 1rem;
-            box-sizing: border-box;
         }
-        .dispatch-card {
-            background: #14171d;
-            border: 2px solid #ffcc00;
-            padding: 2rem;
-            max-width: 450px;
+
+        .container {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
             width: 100%;
-            box-shadow: 0 0 25px rgba(255, 204, 0, 0.15);
-            box-sizing: border-box;
+            max-width: 600px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }
-        .logo-header {
+
+        .header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
             text-align: center;
-            margin-bottom: 1rem;
         }
-        .logo-header img {
-            width: 120px;
-            height: auto;
-            display: block;
-            margin: 0 auto 0.75rem auto;
-        }
-        h2 {
-            color: #ffcc00;
-            text-align: center;
-            margin: 0;
-            letter-spacing: 2px;
-            font-size: 1.4rem;
-            text-transform: uppercase;
-        }
-        .tagline {
-            text-align: center;
-            font-size: 0.75rem;
-            color: #9ca3af;
+
+        .header h1 {
+            color: var(--accent-gold);
+            margin: 0 0 5px 0;
+            font-size: 1.5rem;
             letter-spacing: 1px;
-            margin-top: 0.4rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid #2a2e3d;
-            padding-bottom: 0.75rem;
-        }
-        label {
-            display: block;
-            margin-top: 1rem;
-            font-weight: bold;
-            font-size: 0.8rem;
-            color: #ffcc00;
-            letter-spacing: 0.5px;
             text-transform: uppercase;
         }
-        input, select, textarea {
-            width: 100%;
-            padding: 0.6rem;
-            margin-top: 0.3rem;
-            background: #1e222b;
-            border: 1px solid #373d4b;
-            color: #f3f4f6;
-            box-sizing: border-box;
-            font-family: inherit;
+
+        .header p {
+            color: var(--text-muted);
+            margin: 0;
             font-size: 0.85rem;
         }
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #ffcc00;
-            background: #242934;
+
+        .form-group {
+            margin-bottom: 15px;
         }
-        button {
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        input[type="text"], select, textarea {
             width: 100%;
-            margin-top: 1.75rem;
-            padding: 0.85rem;
-            background: #ffcc00;
-            color: #0b0c0e;
-            border: none;
-            font-weight: bold;
+            padding: 10px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-main);
+            box-sizing: border-box;
             font-size: 0.95rem;
-            letter-spacing: 1.5px;
+        }
+
+        input[type="text"]:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .comms-box {
+            background-color: rgba(212, 175, 55, 0.05);
+            border: 1px solid var(--accent-gold);
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .comms-box p {
+            margin: 0 0 8px 0;
+            font-size: 0.85rem;
+            color: var(--accent-gold);
+        }
+
+        .vdo-link {
+            display: inline-block;
+            background-color: var(--accent-gold);
+            color: #000;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .vdo-link:hover {
+            opacity: 0.9;
+        }
+
+        button.submit-btn {
+            width: 100%;
+            background-color: var(--accent-red);
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.2s;
             text-transform: uppercase;
-            transition: background 0.2s ease, transform 0.1s ease;
+            letter-spacing: 1px;
         }
-        button:hover {
-            background: #e6b800;
+
+        button.submit-btn:hover {
+            background-color: #b82a28;
         }
-        button:active {
-            transform: scale(0.99);
+
+        button.submit-btn:disabled {
+            background-color: var(--border-color);
+            cursor: not-allowed;
+            color: var(--text-muted);
+        }
+
+        .status-msg {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            text-align: center;
+            display: none;
+        }
+
+        .status-msg.success {
+            background-color: rgba(46, 160, 67, 0.15);
+            border: 1px solid #2ea043;
+            color: #3fb950;
+            display: block;
+        }
+
+        .status-msg.error {
+            background-color: rgba(218, 54, 51, 0.15);
+            border: 1px solid var(--accent-red);
+            color: #f85149;
+            display: block;
         }
     </style>
 </head>
 <body>
 
-<div class="dispatch-card">
-    <div class="logo-header">
-        <!-- REPLACE 'logo.png' WITH YOUR ACTUAL LOGO FILE NAME OR IMAGE URL -->
-        <img src="logo.png" alt="DEADSTICK Logo" onerror="this.style.display='none'">
-        <h2>[ DEADSTICK DISPATCH ]</h2>
-        <div class="tagline">WE FIND YOU. WE FIX YOU. WE FUEL YOU.</div>
+<div class="container">
+    <div class="header">
+        <h1>Deadstick Dispatch Terminal</h1>
+        <p>Search & Rescue (CSAR) | Field Logistics | Emergency Contracting</p>
     </div>
-    
+
+    <div class="comms-box">
+        <p><strong>IMMEDIATE VOICE LINK REQUIRED?</strong></p>
+        <a href="https://vdo.ninja/?room=DeadstickDispatch" target="_blank" class="vdo-link">Join Zero-Friction Comms (VDO.ninja)</a>
+    </div>
+
     <form id="dispatchForm">
-        <label>RSI Spectrum Handle</label>
-        <input type="text" id="handle" required placeholder="e.g. Commander_Riker">
+        <div class="form-group">
+            <label for="clientName">Client Handle / RSI Moniker *</label>
+            <input type="text" id="clientName" required placeholder="e.g. Cmdr_Lanc">
+        </div>
 
-        <label>Location / System / Marker</label>
-        <input type="text" id="location" required placeholder="e.g. Yela OM-3 / MicroTech Shubin">
+        <div class="form-group">
+            <label for="serviceType">Requested Assistance *</label>
+            <select id="serviceType" required>
+                <option value="CSAR - Medical Extraction">CSAR - Medical Extraction / Rescue</option>
+                <option value="Logistics - Fuel / Repair Supply">Logistics - Fuel / Ammunition / Resupply</option>
+                <option value="Escort - Combat Support">Escort - Tactical Escort / Overwatch</option>
+                <option value="Recovery - Asset Salvage">Recovery - Ship / Gear Salvage</option>
+            </select>
+        </div>
 
-        <label>Service Needed</label>
-        <select id="service">
-            <option value="CSAR / Medical Extraction">CSAR / Medical Extraction</option>
-            <option value="Tactical Refuel">Tactical Refuel</option>
-            <option value="Ammo / Consumable Resupply">Ammo / Resupply</option>
-            <option value="Armed Escort">Armed Escort</option>
-        </select>
+        <div class="form-group">
+            <label for="location">Current Sector / System / Marker *</label>
+            <input type="text" id="location" required placeholder="e.g. MicroTech - OM-2 / Ghost Hollow">
+        </div>
 
-        <label>Threat Level</label>
-        <select id="threat">
-            <option value="Low / Clear Sector">Low / Clear Sector</option>
-            <option value="Medium / Hostiles Nearby">Medium / Hostiles Nearby</option>
-            <option value="HOT-ZONE / Active Combat">HOT-ZONE / Active Combat</option>
-        </select>
+        <div class="form-group">
+            <label for="threatLevel">Threat Level *</label>
+            <select id="threatLevel" required>
+                <option value="Green - Cold (No hostile contact)">Green - Clear / Secure Space</option>
+                <option value="Yellow - Moderate (Hostiles in area)">Yellow - Elevated / Hostiles Proximity</option>
+                <option value="Red - Hot (Active combat / Downed)">Red - Active Hostile Engagement</option>
+            </select>
+        </div>
 
-        <label>Tactical Notes / Ship Model</label>
-        <textarea id="notes" rows="3" placeholder="Soft-dead Cutlass Black, 1 wounded..."></textarea>
+        <div class="form-group">
+            <label for="details">Tactical Brief / Operational Notes</label>
+            <textarea id="details" placeholder="Specify ship type, injuries, hostile counts, or special access codes..."></textarea>
+        </div>
 
-        <button type="submit">TRANSMIT BEACON</button>
+        <button type="submit" id="submitBtn" class="submit-btn">Transmit Emergency Signal</button>
+        <div id="statusMsg" class="status-msg"></div>
     </form>
 </div>
 
 <script>
-    // PASTE YOUR DISCORD WEBHOOK URL HERE
-    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1567689888495829112/6r3Zuvtg1Jn0dbq1uPTWm0y0fcuwnxowMpXog99A0VRr_WKYF-zHpw9gpgl_RYhLvbFx";
+    // Primary Target Discord Webhook
+    const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1567689888495829112/6r3Zuvtg1Jn0dbq1uPTWm0y0fcuwnxowMpXog99A0VRr_WKYF-zHpw9gpgl_RYhLvbFx";
+    const CORS_PROXY = "https://corsproxy.io/?";
 
-    // Global guard flag to prevent rapid spam / double submissions
-    let isSubmitting = false;
+    const form = document.getElementById('dispatchForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const statusMsg = document.getElementById('statusMsg');
 
-    document.getElementById('dispatchForm').addEventListener('submit', async function(e) {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // 1. LOOP PREVENTION: Block submission if already in progress
-        if (isSubmitting) return;
-        isSubmitting = true;
-
-        // Visual feedback & disable button immediately
-        const submitBtn = e.target.querySelector('button[type="submit"]');
-        const originalBtnText = submitBtn.innerText;
+        // Prevent dual-submission loops
         submitBtn.disabled = true;
-        submitBtn.innerText = "TRANSMITTING...";
-
-        // Extract form values
-        const handle = document.getElementById('handle').value;
-        const location = document.getElementById('location').value;
-        const service = document.getElementById('service').value;
-        const threat = document.getElementById('threat').value;
-        const notes = document.getElementById('notes').value;
-
-        // VDO.ninja Standing Room
-        const voiceRoomUrl = "https://vdo.ninja/?room=Deadstick_CSAR_Comms&audioonly";
-        
-        // Dynamic embed accent color (Yellow for standard, Red for Hot-Zone)
-        const embedColor = threat.includes("HOT-ZONE") ? 16724736 : 16763904;
+        submitBtn.innerText = "Transmitting...";
+        statusMsg.className = "status-msg";
+        statusMsg.style.display = "none";
 
         const payload = {
             embeds: [{
-                title: "🚨 WEB DISPATCH BEACON RECEIVED 🚨",
-                color: embedColor,
+                title: "🚨 EMERGENCY DISPATCH REQUEST RECEIVED",
+                color: 14331703, // Crimson
                 fields: [
-                    { name: "Client Handle", value: handle, inline: true },
-                    { name: "Location", value: location, inline: true },
-                    { name: "Service Requested", value: service, inline: true },
-                    { name: "Threat Level", value: threat, inline: false },
-                    { name: "Tactical Notes", value: notes || "None provided", inline: false },
-                    { name: "🎙️ Emergency Voice Channel", value: `[Join VDO.ninja Voice Comms](${voiceRoomUrl})`, inline: false }
+                    { name: "Client Moniker", value: document.getElementById('clientName').value, inline: true },
+                    { name: "Service Required", value: document.getElementById('serviceType').value, inline: true },
+                    { name: "Location / Sector", value: document.getElementById('location').value, inline: false },
+                    { name: "Threat Level", value: document.getElementById('threatLevel').value, inline: true },
+                    { name: "Operational Briefing", value: document.getElementById('details').value || "None provided.", inline: false }
                 ],
-                footer: { text: "DEADSTICK // External Dispatch Terminal" },
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                footer: { text: "Deadstick PMC | Automated Dispatch System" }
             }]
         };
 
-        // 2. PROXY RELAY: Route via corsproxy.io to bypass browser CORS / 405 errors
-        const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(DISCORD_WEBHOOK_URL);
-
         try {
-            const response = await fetch(proxyUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+            // Attempt 1: Direct Fetch
+            let response = await fetch(DISCORD_WEBHOOK, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
 
-            if (response.ok) {
-                alert("BEACON TRANSMITTED! Opening temporary voice comms channel now...");
-                window.open(voiceRoomUrl, '_blank');
-                document.getElementById('dispatchForm').reset();
+            // Attempt 2: Proxy Failover if CORS or Direct Delivery Fails
+            if (!response.ok) {
+                const proxyUrl = CORS_PROXY + encodeURIComponent(DISCORD_WEBHOOK);
+                response = await fetch(proxyUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+            }
+
+            if (response.ok || response.status === 204) {
+                statusMsg.className = "status-msg success";
+                statusMsg.innerText = "Signal Transmitted Successfully. Stand by for Operator contact.";
+                form.reset();
             } else {
-                alert("Transmission failed. Please verify your Discord Webhook URL.");
+                throw new Error(`HTTP Error Status: ${response.status}`);
             }
         } catch (err) {
-            console.error("Dispatch Error:", err);
-            alert("Error transmitting beacon. Please check your network connection.");
+            console.error("Transmission error:", err);
+            statusMsg.className = "status-msg error";
+            statusMsg.innerText = "Transmission Failed. Connect via VDO.ninja voice channel directly.";
         } finally {
-            // 3. COOLDOWN: Re-enable the submit button after a 5-second cooldown
+            // Re-enable button after 5-second cooldown
             setTimeout(() => {
-                isSubmitting = false;
                 submitBtn.disabled = false;
-                submitBtn.innerText = originalBtnText;
+                submitBtn.innerText = "Transmit Emergency Signal";
             }, 5000);
         }
     });
