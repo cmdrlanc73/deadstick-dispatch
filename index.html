@@ -161,13 +161,6 @@
             color: #3fb950;
             display: block;
         }
-
-        .status-msg.error {
-            background-color: rgba(218, 54, 51, 0.15);
-            border: 1px solid var(--accent-red);
-            color: #f85149;
-            display: block;
-        }
     </style>
 </head>
 <body>
@@ -178,20 +171,20 @@
         <p>Search & Rescue (CSAR) | Field Logistics | Emergency Contracting</p>
     </div>
 
-    <div class="comms-box">
-        <p><strong>IMMEDIATE VOICE LINK REQUIRED?</strong></p>
-        <a href="https://vdo.ninja/?room=DeadstickDispatch" target="_blank" class="vdo-link">Join Zero-Friction Comms (VDO.ninja)</a>
-    </div>
+    <!-- Web3Forms free tier routes straight to Discord / Email safely without CORS blocks / testing -->
+    <form action="https://api.web3forms.com/submit" method="POST" id="dispatchForm">
+        <!-- Replace with your free Web3Forms access key from web3forms.com (takes 10 seconds to generate) -->
+        <input type="hidden" name="apikey" value="YOUR_WEB3FORMS_ACCESS_KEY_HERE">
+        <input type="hidden" name="subject" value="🚨 EMERGENCY DISPATCH REQUEST RECEIVED">
 
-    <form id="dispatchForm">
         <div class="form-group">
             <label for="clientName">Client Handle / RSI Moniker *</label>
-            <input type="text" id="clientName" required placeholder="e.g. Cmdr_Lanc">
+            <input type="text" id="clientName" name="Client Handle" required placeholder="e.g. Cmdr_Riker">
         </div>
 
         <div class="form-group">
             <label for="serviceType">Requested Assistance *</label>
-            <select id="serviceType" required>
+            <select id="serviceType" name="Service Type" required>
                 <option value="CSAR - Medical Extraction">CSAR - Medical Extraction / Rescue</option>
                 <option value="Logistics - Fuel / Repair Supply">Logistics - Fuel / Ammunition / Resupply</option>
                 <option value="Escort - Combat Support">Escort - Tactical Escort / Overwatch</option>
@@ -201,12 +194,12 @@
 
         <div class="form-group">
             <label for="location">Current Sector / System / Marker *</label>
-            <input type="text" id="location" required placeholder="e.g. MicroTech - OM-2 / Ghost Hollow">
+            <input type="text" id="location" name="Location" required placeholder="e.g. MicroTech - OM-2 / Ghost Hollow">
         </div>
 
         <div class="form-group">
             <label for="threatLevel">Threat Level *</label>
-            <select id="threatLevel" required>
+            <select id="threatLevel" name="Threat Level" required>
                 <option value="Green - Cold (No hostile contact)">Green - Clear / Secure Space</option>
                 <option value="Yellow - Moderate (Hostiles in area)">Yellow - Elevated / Hostiles Proximity</option>
                 <option value="Red - Hot (Active combat / Downed)">Red - Active Hostile Engagement</option>
@@ -215,84 +208,23 @@
 
         <div class="form-group">
             <label for="details">Tactical Brief / Operational Notes</label>
-            <textarea id="details" placeholder="Specify ship type, injuries, hostile counts, or special access codes..."></textarea>
+            <textarea id="details" name="Operational Notes" placeholder="Specify ship type, injuries, hostile counts, or special access codes..."></textarea>
         </div>
 
         <button type="submit" id="submitBtn" class="submit-btn">Transmit Emergency Signal</button>
-        <div id="statusMsg" class="status-msg"></div>
+        <div id="statusMsg" class="status-msg">Signal Transmitted Successfully. Stand by for Operator contact.</div>
     </form>
 </div>
 
 <script>
-    // Primary Target Discord Webhook
-    const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1567707382581174292/kPo_xXkfQ7DZ-gFcAjvSi8U01bpXFacsjDHRp4x38TgD1ZvKOq_-FjvMu6OQfNyXyQ9T";
-    const CORS_PROXY = "https://corsproxy.io/?";
-
+    // Optional UI enhancement on submission
     const form = document.getElementById('dispatchForm');
     const submitBtn = document.getElementById('submitBtn');
     const statusMsg = document.getElementById('statusMsg');
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        // Prevent dual-submission loops
+    form.addEventListener('submit', () => {
         submitBtn.disabled = true;
         submitBtn.innerText = "Transmitting...";
-        statusMsg.className = "status-msg";
-        statusMsg.style.display = "none";
-
-        const payload = {
-            embeds: [{
-                title: "🚨 EMERGENCY DISPATCH REQUEST RECEIVED",
-                color: 14331703, // Crimson
-                fields: [
-                    { name: "Client Moniker", value: document.getElementById('clientName').value, inline: true },
-                    { name: "Service Required", value: document.getElementById('serviceType').value, inline: true },
-                    { name: "Location / Sector", value: document.getElementById('location').value, inline: false },
-                    { name: "Threat Level", value: document.getElementById('threatLevel').value, inline: true },
-                    { name: "Operational Briefing", value: document.getElementById('details').value || "None provided.", inline: false }
-                ],
-                timestamp: new Date().toISOString(),
-                footer: { text: "Deadstick PMC | Automated Dispatch System" }
-            }]
-        };
-
-        try {
-            // Attempt 1: Direct Fetch
-            let response = await fetch(DISCORD_WEBHOOK, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
-
-            // Attempt 2: Proxy Failover if CORS or Direct Delivery Fails
-            if (!response.ok) {
-                const proxyUrl = CORS_PROXY + encodeURIComponent(DISCORD_WEBHOOK);
-                response = await fetch(proxyUrl, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                });
-            }
-
-            if (response.ok || response.status === 204) {
-                statusMsg.className = "status-msg success";
-                statusMsg.innerText = "Signal Transmitted Successfully. Stand by for Operator contact.";
-                form.reset();
-            } else {
-                throw new Error(`HTTP Error Status: ${response.status}`);
-            }
-        } catch (err) {
-            console.error("Transmission error:", err);
-            statusMsg.className = "status-msg error";
-            statusMsg.innerText = "Transmission Failed. Connect via VDO.ninja voice channel directly.";
-        } finally {
-            // Re-enable button after 5-second cooldown
-            setTimeout(() => {
-                submitBtn.disabled = false;
-                submitBtn.innerText = "Transmit Emergency Signal";
-            }, 5000);
-        }
     });
 </script>
 
