@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deadstick // TDD Emergency Terminal</title>
+    <title>Deadstick Dispatch Terminal</title>
     <style>
         :root {
             --tdd-bg: #0b0d10;
@@ -203,9 +203,10 @@
 <body>
 
 <div class="container">
+    <!-- RESTORED: Deadstick PMC Branding / Logo Header -->
     <div class="header">
-        <h1>Deadstick Dispatch Terminal</h1>
-        <p>CSAR // Field Logistics // Emergency Comms Relay</p>
+        <h1>DEADSTICK PMC</h1>
+        <p>Search & Rescue (CSAR) // Field Logistics // Emergency Dispatch</p>
     </div>
 
     <!-- Active Form View -->
@@ -267,7 +268,7 @@
         e.preventDefault();
 
         const client = document.getElementById('clientName').value;
-        const service = document.getElementById('serviceType').value;
+        const service = document.getElementById('serviceType', true).value;
         const location = document.getElementById('location').value;
         const threat = document.getElementById('threatLevel').value;
         const details = document.getElementById('details').value || "None provided.";
