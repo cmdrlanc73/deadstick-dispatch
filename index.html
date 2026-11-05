@@ -236,4 +236,113 @@
     <div class="header">
         <img src="logo.png" alt="Deadstick Logistics Logo" style="max-width: 180px; height: auto; margin-bottom: 15px; display: block; margin-left: auto; margin-right: auto;">
         <h1>DEADSTICK LOGISTICS</h1>
-        <p>Search & Rescue (CSAR)
+        <p>Search & Rescue (CSAR) // Field Logistics // Emergency Dispatch</p>
+    </div>
+
+    <div class="nav-links">
+        <a href="[https://robertsspaceindustries.com/en/orgs/DEADSTICK](https://robertsspaceindustries.com/en/orgs/DEADSTICK)" target="_blank" class="nav-btn">// RSI Org Page</a>
+        <a href="[https://stoat.chat/server/01M6NTZ35T3ER6ARWBTXWBG051/channel/01M6NVVE40DRN7154XMZ3WHAG5](https://stoat.chat/server/01M6NTZ35T3ER6ARWBTXWBG051/channel/01M6NVVE40DRN7154XMZ3WHAG5)" id="navStoatBtn" target="_blank" class="nav-btn">// Our Stoat Server</a>
+    </div>
+
+    <form id="dispatchForm">
+        <div class="form-group">
+            <label for="clientName">Client Handle / RSI Moniker</label>
+            <input type="text" id="clientName" required placeholder="e.g. Cmdr_Riker">
+        </div>
+
+        <div class="form-group">
+            <label for="serviceType">Requested Assistance</label>
+            <select id="serviceType" required>
+                <option value="CSAR - Medical Extraction">CSAR - Medical Extraction / Rescue</option>
+                <option value="Logistics - Fuel / Repair Supply">Logistics - Fuel / Ammunition / Resupply</option>
+                <option value="Escort - Combat Support">Escort - Tactical Escort / Overwatch</option>
+                <option value="Recovery - Asset Salvage">Recovery - Ship / Gear Salvage</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="location">Current Sector / System / Marker</label>
+            <input type="text" id="location" required placeholder="e.g. MicroTech - OM-2 / Ghost Hollow">
+        </div>
+
+        <div class="form-group">
+            <label for="threatLevel">Threat Level</label>
+            <select id="threatLevel" required>
+                <option value="Green - Cold (No hostile contact)">Green - Clear / Secure Space</option>
+                <option value="Yellow - Moderate (Hostiles in area)">Yellow - Elevated / Hostiles Proximity</option>
+                <option value="Red - Hot (Active combat / Downed)">Red - Active Hostile Engagement</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="details">Tactical Brief / Operational Notes</label>
+            <textarea id="details" maxlength="1500" placeholder="Specify ship type, injuries, hostile counts, or special access codes..."></textarea>
+        </div>
+
+        <button type="submit" id="submitBtn" class="submit-btn">Transmit Emergency Signal</button>
+    </form>
+
+    <div id="standbyScreen" class="standby-screen">
+        <div class="spinner"></div>
+        <h2>Signal Locked & Copied</h2>
+        <p>Tactical data packet buffered to clipboard.<br><strong>Paste into secure comms</strong> upon channel connection.</p>
+        <div id="clipboardBox" class="clipboard-box"></div>
+        <button type="button" class="nav-btn" onclick="resetForm()">// TRANSMIT ANOTHER SIGNAL</button>
+    </div>
+</div>
+
+<script>
+    const WEBHOOK_URL = "[https://stoat.chat/api/webhooks/01M6NX4T73746H9E12SFBYSER2/YDLEKJ052-SOa_lcdjW8ZCrzmOWG2NYTR8RrgHKcCnKAUtpJwr92-OIjMR62Jvcr](https://stoat.chat/api/webhooks/01M6NX4T73746H9E12SFBYSER2/YDLEKJ052-SOa_lcdjW8ZCrzmOWG2NYTR8RrgHKcCnKAUtpJwr92-OIjMR62Jvcr)";
+
+    document.getElementById('dispatchForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const clientName = document.getElementById('clientName').value;
+        const serviceType = document.getElementById('serviceType').value;
+        const location = document.getElementById('location').value;
+        const threatLevel = document.getElementById('threatLevel').value;
+        const details = document.getElementById('details').value || "None provided";
+
+        const payload = {
+            content: `@everyone **🚨 INCOMING EMERGENCY DISTRESS SIGNAL 🚨**\n` +
+                     `> **SERVICE:** ${serviceType}\n` +
+                     `> **CLIENT:** ${clientName}\n` +
+                     `> **SECTOR:** ${location}\n` +
+                     `> **THREAT:** ${threatLevel}\n` +
+                     `> **NOTES:** ${details}`
+        };
+
+        document.getElementById('dispatchForm').style.display = 'none';
+        document.getElementById('standbyScreen').style.display = 'block';
+
+        try {
+            const response = await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const summaryText = `CLIENT: ${clientName} | SERVICE: ${serviceType} | SECTOR: ${location} | THREAT: ${threatLevel}`;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(summaryText);
+            }
+            document.getElementById('clipboardBox').innerText = summaryText;
+
+            if (!response.ok) {
+                console.warn("Webhook transmission warning: Status code " + response.status);
+            }
+        } catch (error) {
+            console.error("Transmission network error:", error);
+        }
+    });
+
+    function resetForm() {
+        document.getElementById('dispatchForm').reset();
+        document.getElementById('standbyScreen').style.display = 'none';
+        document.getElementById('dispatchForm').style.display = 'block';
+    }
+</script>
+</body>
+</html>
