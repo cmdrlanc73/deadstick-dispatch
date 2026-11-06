@@ -31,9 +31,9 @@ try {
         $rankEntries |
         ForEach-Object {
             $relative = $_.FullName.Substring($rankRoot.Length)
-            ($relative -split '/')[0]
+            if ($relative -match '/') { ($relative -split '/')[0] }
         } |
-        Where-Object { $_ } |
+        Where-Object { $_ -and $_ -ne '.DS_Store' } |
         Sort-Object -Unique
     )
 
@@ -45,13 +45,14 @@ try {
     $lines.Add('')
     $lines.Add("Total files under DS9 ranks/: $($rankEntries.Count)")
     $lines.Add("Total PNG files under DS9 ranks/: $($pngEntries.Count)")
+    $lines.Add("Non-PNG files under DS9 ranks/: $(@($rankEntries | Where-Object { [System.IO.Path]::GetExtension($_.Name) -ine '.png' }).Count)")
     $lines.Add("Rank-set directories: $($sets -join ', ')")
     $lines.Add('')
 
     foreach ($set in $sets) {
         $setPrefix = "$rankRoot$set/"
         $setFiles = @($rankEntries | Where-Object { $_.FullName.StartsWith($setPrefix, [StringComparison]::OrdinalIgnoreCase) })
-        $setPngs = @($setFiles | Where-Object { $_.Extension -ieq '.png' })
+        $setPngs = @($setFiles | Where-Object { [System.IO.Path]::GetExtension($_.Name) -ieq '.png' })
         $lines.Add("=== Rank set: $set ===")
         $lines.Add("Files: $($setFiles.Count)")
         $lines.Add("PNG images: $($setPngs.Count)")
