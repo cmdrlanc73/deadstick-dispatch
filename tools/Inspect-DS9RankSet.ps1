@@ -26,7 +26,7 @@ try {
         }
     )
 
-    $pngEntries = @($rankEntries | Where-Object { $_.Extension -ieq '.png' })
+    $pngEntries = @($rankEntries | Where-Object { [System.IO.Path]::GetExtension($_.Name) -ieq '.png' })
     $sets = @(
         $rankEntries |
         ForEach-Object {
