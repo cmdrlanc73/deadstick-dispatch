@@ -54,7 +54,7 @@ try {
                 $relative = $_.FullName.Substring($skinPrefix.Length)
                 $_.Name -eq 'skin.yml' -or
                 $_.Name -match '^template_(admin|login|main|wiki)\.php$' -or
-                $_.Extension -in @('.css', '.js')
+                [System.IO.Path]::GetExtension($_.Name) -in @('.css', '.js')
             } |
             Sort-Object FullName
         )
